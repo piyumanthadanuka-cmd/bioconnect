@@ -3,145 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BioConnect | BMT 23/24</title>
+    <title>BioConnect | Student Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap');
-        
-        :root { --primary: #4ade80; --accent: #f472b6; --bg: #030712; }
-        body { background-color: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
-        
+        body { background-color: #030712; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .nav-active { color: var(--primary); font-weight: 800; border-bottom: 2px solid var(--primary); }
+        .nav-active { color: #4ade80; border-bottom: 2px solid #4ade80; opacity: 1 !important; }
         .page-hidden { display: none; }
-        
-        /* High-quality button glow */
-        .btn-glow { transition: 0.3s; border: 1px solid rgba(74, 222, 128, 0.2); }
-        .btn-glow:hover { background: var(--primary); color: black; box-shadow: 0 0 20px rgba(74, 222, 128, 0.4); }
-        
-        .announcement-card { transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .announcement-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.06); }
+        .modal-hidden { opacity: 0; pointer-events: none; transform: scale(0.9); }
+        .modal-show { opacity: 1; pointer-events: auto; transform: scale(1); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     </style>
 </head>
-<body class="selection:bg-green-500/30">
+<body>
 
-    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl glass rounded-3xl px-6 py-4 flex justify-between items-center shadow-2xl" data-aos="fade-down">
-        <span class="text-lg font-extrabold tracking-tighter text-white">BIO<span class="text-green-400">CONNECT</span></span>
-        <div class="flex gap-5 text-[10px] uppercase font-bold tracking-widest">
-            <button onclick="nav('home')" id="btn-home" class="nav-active opacity-100">Home</button>
-            <button onclick="nav('academics')" id="btn-academics" class="opacity-50 hover:opacity-100">Vault</button>
-            <button onclick="nav('about')" id="btn-about" class="opacity-50 hover:opacity-100">About</button>
+    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-4xl glass rounded-3xl px-6 py-4 flex justify-between items-center shadow-2xl">
+        <span class="text-lg font-extrabold tracking-tighter uppercase">Bio<span class="text-green-400">Connect</span></span>
+        <div class="flex gap-4 text-[10px] uppercase font-bold tracking-widest">
+            <button onclick="nav('home')" id="btn-home" class="nav-active">Home</button>
+            <button onclick="nav('academics')" id="btn-academics" class="opacity-50">Vault</button>
+            <button onclick="checkAccess()" id="btn-links" class="opacity-50 text-green-400">Zoom Links</button>
         </div>
     </nav>
 
+    <div id="login-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md modal-hidden">
+        <div class="glass p-10 rounded-[40px] w-80 text-center border-t-4 border-green-500">
+            <h2 class="text-xl font-black mb-2 uppercase">Student Login</h2>
+            <p class="text-[10px] opacity-50 mb-6 uppercase tracking-widest">Batch 23/24 Access Only</p>
+            <input type="password" id="pass-input" placeholder="Enter Batch Password" class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-green-500 mb-4 text-center">
+            <button onclick="verifyPass()" class="w-full bg-green-500 text-black font-black py-3 rounded-2xl text-xs uppercase hover:bg-white transition-all">Unlock Portal</button>
+            <button onclick="closeLogin()" class="mt-4 text-[9px] uppercase opacity-30 hover:opacity-100">Cancel</button>
+        </div>
+    </div>
+
     <main id="page-home" class="pt-32 px-6 max-w-6xl mx-auto">
-        <section class="relative h-[400px] rounded-[48px] overflow-hidden glass mb-12 shadow-2xl" data-aos="zoom-in">
-            <img id="banner-img" src="https://images.unsplash.com/photo-1532187863486-abf9d39d99c5?q=80&w=2000" class="absolute inset-0 w-full h-full object-cover opacity-30 scale-110">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-            <div class="absolute bottom-12 left-12">
-                <p class="text-green-400 font-bold text-xs uppercase tracking-[0.3em] mb-2">University of Indigenous Medicine</p>
-                <h1 class="text-6xl font-black text-white leading-none uppercase tracking-tighter">BMT <span class="text-green-400">23/24</span></h1>
-            </div>
-        </section>
-
-        <div class="grid lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 space-y-6">
-                <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Bulletin Board</h3>
-                <div id="news-container" class="space-y-4">
-                    <div class="p-12 text-center opacity-30 italic">Connecting to secure data...</div>
-                </div>
-            </div>
-
-            <aside class="space-y-8">
-                <div class="glass p-8 rounded-[40px] border-l-4 border-pink-500 shadow-xl" data-aos="fade-left">
-                    <h3 class="text-[10px] font-black text-pink-500 uppercase mb-4 tracking-widest">Celebrations</h3>
-                    <p id="bday-text" class="text-2xl font-bold text-white italic">Searching...</p>
-                </div>
-                <div class="glass p-8 rounded-[40px] border-l-4 border-blue-500 shadow-xl" data-aos="fade-left" data-aos-delay="100">
-                    <h3 class="text-[10px] font-black text-blue-500 uppercase mb-4 tracking-widest">Next Lecture</h3>
-                    <p class="text-lg font-bold">Physics for Bio-Tech</p>
-                    <p class="text-[10px] opacity-50 mt-1 uppercase">08:30 AM | MAIN HALL</p>
-                </div>
-            </aside>
+        <div class="glass h-64 rounded-[40px] flex items-end p-10 mb-8 overflow-hidden relative">
+            <img src="https://images.unsplash.com/photo-1517817748493-49ec54a32465?q=80&w=2000" class="absolute inset-0 w-full h-full object-cover opacity-20">
+            <h1 class="text-5xl font-black relative z-10 uppercase tracking-tighter">Welcome, <span class="text-green-400">Batch!</span></h1>
         </div>
     </main>
 
-    <main id="page-academics" class="page-hidden pt-32 px-6 max-w-6xl mx-auto">
-        <header class="text-center mb-16">
-            <h2 class="text-5xl font-black uppercase tracking-tighter mb-4">Academic Vault</h2>
-            <p class="opacity-50 text-sm">Access your batch resources and past papers below.</p>
-        </header>
-        <div id="vault-grid" class="grid md:grid-cols-3 gap-6"></div>
+    <main id="page-links" class="page-hidden pt-32 px-6 max-w-4xl mx-auto">
+        <h2 class="text-4xl font-black mb-8 text-center uppercase italic text-green-400">Lecture Portal</h2>
+        <div class="grid gap-4">
+            <div class="glass p-8 rounded-[35px] flex justify-between items-center border-l-4 border-blue-500">
+                <div><h4 class="font-bold">Biology Lecture</h4><p class="text-[10px] opacity-50">Dr. Perera | 08:30 AM</p></div>
+                <a href="https://zoom.us/join" target="_blank" class="bg-blue-500 px-6 py-2 rounded-full text-[10px] font-black uppercase">Join Zoom</a>
+            </div>
+            <div class="glass p-8 rounded-[35px] flex justify-between items-center border-l-4 border-purple-500">
+                <div><h4 class="font-bold">Physics Session</h4><p class="text-[10px] opacity-50">Mr. Silva | 11:00 AM</p></div>
+                <a href="#" class="bg-purple-500 px-6 py-2 rounded-full text-[10px] font-black uppercase">Join Zoom</a>
+            </div>
+        </div>
     </main>
 
-    <footer class="mt-32 pb-16 text-center border-t border-white/5 pt-12">
-        <p class="text-[9px] font-bold uppercase tracking-[0.6em] text-white/20">&copy; 2026 Biomedical Technology | GWUIM</p>
-    </footer>
-
     <script>
-        const sheetID = "1SqbfMALnUaJonxSlEXH1Of0AmPKD2Jnyjmwl0XtYH4U";
-        
+        // Set your password here
+        const BATCH_PASS = "BMT2026"; 
+        let isAuthorized = false;
+
         function nav(id) {
             document.querySelectorAll('main').forEach(p => p.classList.add('page-hidden'));
             document.getElementById('page-'+id).classList.remove('page-hidden');
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active', 'opacity-100'));
             document.getElementById('btn-'+id).classList.add('nav-active', 'opacity-100');
-            window.scrollTo(0,0);
-            AOS.refresh();
         }
 
-        async function loadData() {
-            try {
-                // Professional Proxy to prevent "Sync Errors"
-                const proxy = "https://api.allorigins.win/raw?url=";
-                const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:csv`;
-                const response = await fetch(proxy + encodeURIComponent(url));
-                const text = await response.text();
-                const rows = text.split(/\r?\n/).slice(1);
-
-                const newsBox = document.getElementById('news-container');
-                const vaultBox = document.getElementById('vault-grid');
-                const bdayBox = document.getElementById('bday-text');
-                const banner = document.getElementById('banner-img');
-
-                newsBox.innerHTML = ''; 
-                vaultBox.innerHTML = '';
-                
-                const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-
-                rows.forEach(row => {
-                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
-                    if (cols.length < 3) return;
-                    const [date, type, title, link] = cols;
-
-                    if (type === "News") {
-                        newsBox.innerHTML += `
-                            <div class="announcement-card glass p-6 rounded-[32px] flex justify-between items-center group shadow-lg">
-                                <div><p class="font-bold text-white group-hover:text-green-400 transition-colors">${title}</p><p class="text-[8px] text-slate-500 uppercase mt-1 tracking-widest">${date}</p></div>
-                                <div class="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_10px_#4ade80]"></div>
-                            </div>`;
-                    } else if (type === "Note") {
-                        vaultBox.innerHTML += `
-                            <div class="glass p-12 rounded-[50px] text-center btn-glow group shadow-xl">
-                                <h4 class="font-black text-lg uppercase mb-6 tracking-tighter">${title}</h4>
-                                <a href="${link}" target="_blank" class="inline-block px-10 py-3 bg-white text-black text-[9px] font-black uppercase rounded-full group-hover:bg-green-400 transition-all">Download</a>
-                            </div>`;
-                    } else if (type === "Birthday" && date.trim() === today) {
-                        bdayBox.innerHTML = `Happy Birthday, <span class="text-green-400 font-black">${title}</span>! 🎂`;
-                        if(link && link.startsWith('http')) banner.src = link;
-                    }
-                });
-
-                if(bdayBox.innerText === "Searching...") bdayBox.innerText = "No birthdays today";
-
-            } catch (err) {
-                console.error("Cloud Error", err);
+        function checkAccess() {
+            if (isAuthorized) {
+                nav('links');
+            } else {
+                document.getElementById('login-modal').classList.add('modal-show');
+                document.getElementById('login-modal').classList.remove('modal-hidden');
             }
         }
 
-        window.onload = () => { AOS.init({ duration: 1000, once: true }); loadData(); };
+        function verifyPass() {
+            const input = document.getElementById('pass-input').value;
+            if (input === BATCH_PASS) {
+                isAuthorized = true;
+                closeLogin();
+                nav('links');
+            } else {
+                alert("Incorrect Password for BMT 23/24");
+            }
+        }
+
+        function closeLogin() {
+            document.getElementById('login-modal').classList.add('modal-hidden');
+            document.getElementById('login-modal').classList.remove('modal-show');
+        }
+
+        window.onload = () => { AOS.init(); };
     </script>
 </body>
 </html>
