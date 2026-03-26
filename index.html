@@ -7,135 +7,141 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
-
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;800&display=swap');
-        body { background-color: #020408; color: #e2e8f0; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .nav-btn.active { color: #4ade80; border-bottom: 2px solid #4ade80; }
-        .page-content { display: none; opacity: 0; transition: 0.5s ease; }
-        .page-content.active { display: block !important; opacity: 1; }
-        .card-glow:hover { border-color: #4ade80; box-shadow: 0 0 20px rgba(74, 222, 128, 0.1); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap');
+        
+        :root { --primary: #4ade80; --accent: #f472b6; --bg: #030712; }
+        body { background-color: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .nav-active { color: var(--primary); font-weight: 800; border-bottom: 2px solid var(--primary); }
+        .page-hidden { display: none; }
+        
+        /* High-quality button glow */
+        .btn-glow { transition: 0.3s; border: 1px solid rgba(74, 222, 128, 0.2); }
+        .btn-glow:hover { background: var(--primary); color: black; box-shadow: 0 0 20px rgba(74, 222, 128, 0.4); }
+        
+        .announcement-card { transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .announcement-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.06); }
     </style>
 </head>
-<body class="pb-20">
+<body class="selection:bg-green-500/30">
 
-    <nav class="sticky top-0 z-50 glass px-8 py-5 flex justify-between items-center mx-4 mt-4 rounded-3xl" data-aos="fade-down">
-        <h1 class="text-xl font-extrabold text-white uppercase tracking-tighter">BioConnect</h1>
-        <div class="flex gap-6 text-[10px] font-black uppercase tracking-widest">
-            <button onclick="showPage('home')" id="home-btn" class="nav-btn active">Home</button>
-            <button onclick="showPage('calendar')" id="calendar-btn" class="nav-btn">Calendar</button>
-            <button onclick="showPage('academics')" id="academics-btn" class="nav-btn">Academics</button>
+    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl glass rounded-3xl px-6 py-4 flex justify-between items-center shadow-2xl" data-aos="fade-down">
+        <span class="text-lg font-extrabold tracking-tighter text-white">BIO<span class="text-green-400">CONNECT</span></span>
+        <div class="flex gap-5 text-[10px] uppercase font-bold tracking-widest">
+            <button onclick="nav('home')" id="btn-home" class="nav-active opacity-100">Home</button>
+            <button onclick="nav('academics')" id="btn-academics" class="opacity-50 hover:opacity-100">Vault</button>
+            <button onclick="nav('about')" id="btn-about" class="opacity-50 hover:opacity-100">About</button>
         </div>
     </nav>
 
-    <div id="home-page" class="page-content active max-w-6xl mx-auto px-4 mt-8">
-        <div class="relative h-[350px] rounded-[50px] overflow-hidden mb-12 glass shadow-2xl" data-aos="zoom-out">
-            <img id="main-banner" src="https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=2000" class="absolute inset-0 w-full h-full object-cover opacity-40">
-            <div class="absolute bottom-10 left-10 z-20">
-                <h2 class="text-6xl font-black text-white uppercase tracking-tighter leading-none">Batch <span class="text-green-400">23/24</span></h2>
+    <main id="page-home" class="pt-32 px-6 max-w-6xl mx-auto">
+        <section class="relative h-[400px] rounded-[48px] overflow-hidden glass mb-12 shadow-2xl" data-aos="zoom-in">
+            <img id="banner-img" src="https://images.unsplash.com/photo-1532187863486-abf9d39d99c5?q=80&w=2000" class="absolute inset-0 w-full h-full object-cover opacity-30 scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+            <div class="absolute bottom-12 left-12">
+                <p class="text-green-400 font-bold text-xs uppercase tracking-[0.3em] mb-2">University of Indigenous Medicine</p>
+                <h1 class="text-6xl font-black text-white leading-none uppercase tracking-tighter">BMT <span class="text-green-400">23/24</span></h1>
             </div>
-        </div>
+        </section>
 
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="md:col-span-2">
-                <h3 class="text-[10px] font-black mb-6 uppercase tracking-widest text-slate-500">Live Announcements</h3>
-                <div id="news-list" class="space-y-4 text-xs italic opacity-30">Connecting to Google Cloud...</div>
+        <div class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-6">
+                <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Bulletin Board</h3>
+                <div id="news-container" class="space-y-4">
+                    <div class="p-12 text-center opacity-30 italic">Connecting to secure data...</div>
+                </div>
             </div>
-            <div class="glass p-8 rounded-[40px] border-l-4 border-pink-500 h-fit" data-aos="fade-left">
-                <h3 class="text-[10px] font-black text-pink-500 uppercase tracking-widest mb-4">Celebrations</h3>
-                <p id="birthday-name" class="text-xl font-bold text-white italic">Searching...</p>
-            </div>
+
+            <aside class="space-y-8">
+                <div class="glass p-8 rounded-[40px] border-l-4 border-pink-500 shadow-xl" data-aos="fade-left">
+                    <h3 class="text-[10px] font-black text-pink-500 uppercase mb-4 tracking-widest">Celebrations</h3>
+                    <p id="bday-text" class="text-2xl font-bold text-white italic">Searching...</p>
+                </div>
+                <div class="glass p-8 rounded-[40px] border-l-4 border-blue-500 shadow-xl" data-aos="fade-left" data-aos-delay="100">
+                    <h3 class="text-[10px] font-black text-blue-500 uppercase mb-4 tracking-widest">Next Lecture</h3>
+                    <p class="text-lg font-bold">Physics for Bio-Tech</p>
+                    <p class="text-[10px] opacity-50 mt-1 uppercase">08:30 AM | MAIN HALL</p>
+                </div>
+            </aside>
         </div>
-    </div>
+    </main>
 
-    <div id="calendar-page" class="page-content max-w-6xl mx-auto px-4 mt-12 text-center">
-        <div class="glass p-20 rounded-[50px]">
-            <h2 class="text-4xl font-black uppercase mb-4 text-green-400">Lecture Schedule</h2>
-            <p class="text-white font-bold tracking-[0.2em] uppercase">Main Hall | 08:00 AM - 04:00 PM</p>
-        </div>
-    </div>
+    <main id="page-academics" class="page-hidden pt-32 px-6 max-w-6xl mx-auto">
+        <header class="text-center mb-16">
+            <h2 class="text-5xl font-black uppercase tracking-tighter mb-4">Academic Vault</h2>
+            <p class="opacity-50 text-sm">Access your batch resources and past papers below.</p>
+        </header>
+        <div id="vault-grid" class="grid md:grid-cols-3 gap-6"></div>
+    </main>
 
-    <div id="academics-page" class="page-content max-w-6xl mx-auto px-4 mt-12">
-        <h2 class="text-5xl font-black text-center mb-12 uppercase tracking-tighter">The Vault</h2>
-        <div id="notes-grid" class="grid sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
-    </div>
-
-    <footer class="mt-20 text-center opacity-30 pb-10 border-t border-white/5 pt-10 mx-10">
-        <p class="text-[9px] font-bold uppercase tracking-[0.5em] text-white">&copy; 2026 Biomedical Technology | GWUIM</p>
+    <footer class="mt-32 pb-16 text-center border-t border-white/5 pt-12">
+        <p class="text-[9px] font-bold uppercase tracking-[0.6em] text-white/20">&copy; 2026 Biomedical Technology | GWUIM</p>
     </footer>
 
-   <script>
-    const sheetID = "1SqbfMALnUaJonxSlEXH1Of0AmPKD2Jnyjmwl0XtYH4U";
-    
-    // NAVIGATION
-    function showPage(pageId) {
-        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(pageId + '-page').classList.add('active');
-        document.getElementById(pageId + '-btn').classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        AOS.refresh();
-    }
-
-    // DATA LOADER
-    async function loadData() {
-        const newsBox = document.getElementById('news-list');
-        const notesBox = document.getElementById('notes-grid');
-        const bdayBox = document.getElementById('birthday-name');
-        const banner = document.getElementById('main-banner');
-
-        try {
-            // Using a proxy to bypass the "Sync Error" security block
-            const proxy = "https://api.allorigins.win/raw?url=";
-            const target = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:csv`;
-            
-            const response = await fetch(proxy + encodeURIComponent(target));
-            const text = await response.text();
-            const rows = text.split(/\r?\n/).slice(1);
-
-            if(rows.length > 0) {
-                newsBox.innerHTML = '';
-                notesBox.innerHTML = '';
-            }
-
-            const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-
-            rows.forEach(row => {
-                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
-                if (cols.length < 3) return;
-                const [date, type, title, link] = cols;
-
-                if (type === "News") {
-                    newsBox.innerHTML += `
-                        <div class="glass p-6 rounded-[24px] flex justify-between items-center border border-white/5 shadow-lg">
-                            <div><p class="text-sm font-bold text-white">${title}</p><p class="text-[8px] text-slate-500 uppercase mt-1">${date}</p></div>
-                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                        </div>`;
-                } else if (type === "Note") {
-                    notesBox.innerHTML += `
-                        <div class="glass p-10 rounded-[40px] border border-white/5 text-center transition-all hover:border-green-400">
-                            <h3 class="text-lg font-black uppercase mb-6">${title}</h3>
-                            <a href="${link}" target="_blank" class="px-8 py-3 rounded-full bg-white text-black text-[9px] font-black uppercase">Open Vault</a>
-                        </div>`;
-                } else if (type === "Birthday" && date.trim() === today) {
-                    bdayBox.innerHTML = `Happy Birthday, <span class="text-green-400">${title}</span>! 🎂`;
-                    if(link) banner.src = link;
-                }
-            });
-
-            if(bdayBox.innerText === "Searching...") bdayBox.innerText = "No birthdays today";
-
-        } catch (e) {
-            newsBox.innerHTML = "<p class='text-red-500 text-xs italic'>Connection Blocked. Try opening the file in a different browser or uploading it to GitHub.</p>";
+    <script>
+        const sheetID = "1SqbfMALnUaJonxSlEXH1Of0AmPKD2Jnyjmwl0XtYH4U";
+        
+        function nav(id) {
+            document.querySelectorAll('main').forEach(p => p.classList.add('page-hidden'));
+            document.getElementById('page-'+id).classList.remove('page-hidden');
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active', 'opacity-100'));
+            document.getElementById('btn-'+id).classList.add('nav-active', 'opacity-100');
+            window.scrollTo(0,0);
+            AOS.refresh();
         }
-    }
 
-    window.onload = () => { 
-        AOS.init({ duration: 1000, once: true });
-        loadData(); 
-    };
-</script>
+        async function loadData() {
+            try {
+                // Professional Proxy to prevent "Sync Errors"
+                const proxy = "https://api.allorigins.win/raw?url=";
+                const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:csv`;
+                const response = await fetch(proxy + encodeURIComponent(url));
+                const text = await response.text();
+                const rows = text.split(/\r?\n/).slice(1);
+
+                const newsBox = document.getElementById('news-container');
+                const vaultBox = document.getElementById('vault-grid');
+                const bdayBox = document.getElementById('bday-text');
+                const banner = document.getElementById('banner-img');
+
+                newsBox.innerHTML = ''; 
+                vaultBox.innerHTML = '';
+                
+                const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+
+                rows.forEach(row => {
+                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
+                    if (cols.length < 3) return;
+                    const [date, type, title, link] = cols;
+
+                    if (type === "News") {
+                        newsBox.innerHTML += `
+                            <div class="announcement-card glass p-6 rounded-[32px] flex justify-between items-center group shadow-lg">
+                                <div><p class="font-bold text-white group-hover:text-green-400 transition-colors">${title}</p><p class="text-[8px] text-slate-500 uppercase mt-1 tracking-widest">${date}</p></div>
+                                <div class="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_10px_#4ade80]"></div>
+                            </div>`;
+                    } else if (type === "Note") {
+                        vaultBox.innerHTML += `
+                            <div class="glass p-12 rounded-[50px] text-center btn-glow group shadow-xl">
+                                <h4 class="font-black text-lg uppercase mb-6 tracking-tighter">${title}</h4>
+                                <a href="${link}" target="_blank" class="inline-block px-10 py-3 bg-white text-black text-[9px] font-black uppercase rounded-full group-hover:bg-green-400 transition-all">Download</a>
+                            </div>`;
+                    } else if (type === "Birthday" && date.trim() === today) {
+                        bdayBox.innerHTML = `Happy Birthday, <span class="text-green-400 font-black">${title}</span>! 🎂`;
+                        if(link && link.startsWith('http')) banner.src = link;
+                    }
+                });
+
+                if(bdayBox.innerText === "Searching...") bdayBox.innerText = "No birthdays today";
+
+            } catch (err) {
+                console.error("Cloud Error", err);
+            }
+        }
+
+        window.onload = () => { AOS.init({ duration: 1000, once: true }); loadData(); };
+    </script>
 </body>
 </html>
