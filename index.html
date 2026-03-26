@@ -49,14 +49,14 @@
         <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000" class="shuffling-photo">
     </div>
 
-    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[92%] max-w-5xl glass rounded-[32px] px-8 py-5 flex justify-between items-center shadow-2xl">
-        <span class="text-xl font-black text-white italic">BIO<span class="text-green-400">CONNECT</span></span>
-        <div class="flex gap-6 text-[10px] uppercase font-bold tracking-widest text-white">
-            <button onclick="nav('home')" id="btn-home" class="nav-active">Home</button>
-            <button onclick="nav('vault')" id="btn-vault" class="opacity-40">Vault</button>
-            <button onclick="checkAccess()" id="btn-links" class="opacity-40 text-green-400">Zoom Portal</button>
-        </div>
-    </nav>
+<nav class="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-[100] w-[95%] max-w-5xl glass rounded-2xl md:rounded-[32px] px-4 md:px-8 py-4 md:py-5 flex justify-between items-center shadow-2xl">
+    <span class="text-sm md:text-xl font-black text-white italic">BIO<span class="text-green-400">CONNECT</span></span>
+    <div class="flex gap-3 md:gap-6 text-[8px] md:text-[10px] uppercase font-bold tracking-widest text-white">
+        <button onclick="nav('home')" id="btn-home" class="nav-active">Home</button>
+        <button onclick="nav('vault')" id="btn-vault" class="opacity-40">Vault</button>
+        <button onclick="checkAccess()" id="btn-links" class="opacity-40 text-green-400">Zoom Portal</button>
+    </div>
+</nav>
 
     <div id="login-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-xl modal-hidden">
         <div class="glass p-12 rounded-[50px] w-[350px] text-center border-t-8 border-green-500">
@@ -67,35 +67,35 @@
         </div>
     </div>
 
-    <main id="page-home" class="pt-32 px-6 max-w-7xl mx-auto pb-20">
-    <section class="relative h-[350px] rounded-[50px] overflow-hidden glass mb-16 shadow-2xl" data-aos="fade-down">
-        <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=2000&auto=format&fit=crop" 
+    <main id="page-home" class="pt-28 md:pt-32 px-4 md:px-6 max-w-7xl mx-auto pb-20">
+    <section class="relative h-[250px] md:h-[350px] rounded-[30px] md:rounded-[50px] overflow-hidden glass mb-10 md:mb-16 shadow-2xl" data-aos="fade-down">
+        <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=2000" 
              class="absolute inset-0 w-full h-full object-cover opacity-40 brightness-50">
         
-        <div class="absolute bottom-12 left-12 z-10">
-            <span class="text-green-400 text-[10px] uppercase tracking-[0.6em] font-black mb-2 block">Department of Technology</span>
-            <h1 class="text-6xl font-black text-white uppercase italic leading-none tracking-tighter">
+        <div class="absolute bottom-6 left-6 md:bottom-12 md:left-12 z-10">
+            <span class="text-green-400 text-[8px] md:text-[10px] uppercase tracking-[0.4em] md:tracking-[0.6em] font-black mb-1 md:mb-2 block">Faculty of Technology</span>
+            <h1 class="text-3xl md:text-6xl font-black text-white uppercase italic leading-none tracking-tighter">
                 BMT <span class="text-green-400">23/24</span>
             </h1>
-            <p class="text-white/60 text-[9px] uppercase tracking-[0.4em] mt-4 font-bold">Biomedical Technology Portal</p>
+            <p class="text-white/60 text-[7px] md:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.4em] mt-2 md:4 font-bold">Biomedical Technology Portal</p>
         </div>
-        
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
     </section>
-            </div>
-        </section>
 
-        <div class="grid lg:grid-cols-3 gap-12">
-            <div class="lg:col-span-2">
-                <h3 class="text-[10px] font-black text-green-400 uppercase tracking-[0.5em] mb-8 ml-4 italic">Release Notes</h3>
-                <div id="news-list" class="space-y-4"></div>
-            </div>
-            <aside class="glass p-8 rounded-[40px] border-l-8 border-pink-500 h-fit">
-                <h3 class="text-[9px] font-black text-pink-500 uppercase mb-4 tracking-widest text-[8px]">Birthdays</h3>
-                <p id="bday-text" class="text-xl font-bold text-white italic">Searching...</p>
-            </aside>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+        <div class="lg:col-span-2 order-2 lg:order-1">
+            <h3 class="text-[9px] md:text-[10px] font-black text-green-400 uppercase tracking-[0.5em] mb-6 md:mb-8 ml-2 italic">Release Notes</h3>
+            <div id="news-list" class="space-y-4"></div>
         </div>
-    </main>
+        
+        <aside class="order-1 lg:order-2">
+            <div class="glass p-6 md:p-8 rounded-[30px] md:rounded-[40px] border-l-8 border-pink-500 h-fit">
+                <h3 class="text-[8px] md:text-[9px] font-black text-pink-500 uppercase mb-3 md:mb-4 tracking-widest">Birthdays</h3>
+                <p id="bday-text" class="text-lg md:text-xl font-bold text-white italic">Searching...</p>
+            </div>
+        </aside>
+    </div>
+</main>
 
     <main id="page-vault" class="page-hidden pt-32 px-6 max-w-7xl mx-auto">
         <h2 class="text-4xl font-black text-center mb-16 uppercase italic text-white">Academic <span class="text-green-400">Vault</span></h2>
