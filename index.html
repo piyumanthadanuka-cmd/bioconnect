@@ -1,6 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BioConnect | BMT 23/24</title>
@@ -81,7 +84,36 @@
         </div>
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
     </section>
+	
+	<section class="mb-16" data-aos="fade-up">
+    <h3 class="text-[10px] font-black text-yellow-500 uppercase tracking-[0.5em] mb-8 italic ml-2">Current Events</h3>
+    <div class="glass p-2 rounded-[45px] border border-white/5 shadow-2xl overflow-hidden min-h-[400px] flex items-center justify-center">
+        
+        <div id="vote-lock" class="text-center p-8">
+            <div class="h-16 w-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-yellow-500/30 text-2xl">🗳️</div>
+            <h2 class="text-2xl font-black text-white uppercase italic mb-2">Representative Election</h2>
+            <p class="text-white/40 text-[9px] uppercase tracking-[0.3em] mb-8 font-bold">Batch Only Access</p>
+            <div class="flex flex-col gap-3 max-w-xs mx-auto">
+                <input type="password" id="pass-input-vote" placeholder="ELECTION CODE" class="bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-center tracking-[0.4em] focus:outline-none focus:border-yellow-500 font-bold">
+                <button onclick="unlockVote()" class="bg-yellow-500 text-black font-black uppercase text-[10px] py-4 rounded-2xl hover:bg-yellow-400 transition-all">Open Portal</button>
+            </div>
+        </div>
 
+        <div id="vote-content" class="hidden w-full p-6 md:p-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <p class="text-green-400 text-[9px] font-black uppercase tracking-widest mb-6 ml-2 italic">Male Candidates</p>
+                    <div id="boys-list" class="space-y-4"></div>
+                </div>
+                <div>
+                    <p class="text-pink-500 text-[9px] font-black uppercase tracking-widest mb-6 ml-2 italic">Female Candidates</p>
+                    <div id="girls-list" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+	
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
         <div class="lg:col-span-2 order-2 lg:order-1">
             <h3 class="text-[9px] md:text-[10px] font-black text-green-400 uppercase tracking-[0.5em] mb-6 md:mb-8 ml-2 italic">Release Notes</h3>
@@ -210,8 +242,114 @@
             </section>
         </div>
     </main>
-
+	
+	
+	
     <script>
+	
+		// --- 1. FIREBASE CONFIG (Paste your keys from Firebase Console here) ---
+const firebaseConfig = {
+    apiKey: "AIzaSyAT2zXZFxeg3uLVTu9AyusIYfwdZpN7OEQ",
+	authDomain: "bioconnect-votes-cd8e6.firebaseapp.com",
+	projectId: "bioconnect-votes-cd8e6",
+	storageBucket: "bioconnect-votes-cd8e6.firebasestorage.app",
+	messagingSenderId: "592515775020",
+	appId: "1:592515775020:web:decd61f9094535bd972f89"
+};
+
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
+
+// --- 2. NOMINEES DATA (Add your real names and photo links here) ---
+const nominees = [
+    { id: 'b1', name: 'thineth', gender: 'boy', photo: 'thineth.jpeg' },
+    { id: 'b2', name: 'tharindu', gender: 'boy', photo: 'https://via.placeholder.com/150' },
+	{ id: 'b2', name: 'sanilka', gender: 'boy', photo: 'sanilka.jpeg' },
+	{ id: 'b2', name: 'dhanuka', gender: 'boy', photo: 'danuka.jpg' },
+	{ id: 'b2', name: 'udayanga', gender: 'boy', photo: 'https://via.placeholder.com/150' },
+    { id: 'g1', name: 'nipuni', gender: 'girl', photo: 'nipuni.jpeg' },
+    { id: 'g2', name: 'pooja', gender: 'girl', photo: 'https://via.placeholder.com/150' },
+	{ id: 'g2', name: 'imalshi', gender: 'girl', photo: 'https://via.placeholder.com/150' },
+	{ id: 'g2', name: 'vishalya', gender: 'girl', photo: 'https://via.placeholder.com/150' }
+];
+
+// --- 3. PASSCODE & UNLOCK LOGIC ---
+function unlockVote() {
+    const code = document.getElementById('pass-input-vote').value;
+    if(code === "BMT2026_VOTE") { // You can change this code
+        document.getElementById('vote-lock').classList.add('hidden');
+        document.getElementById('vote-content').classList.remove('hidden');
+        localStorage.setItem('vote_portal_unlocked', 'true');
+    } else { 
+        alert("Invalid Election Code!"); 
+    }
+}
+
+// Keep it unlocked if they already entered the code
+if(localStorage.getItem('vote_portal_unlocked') === 'true') {
+    if(document.getElementById('vote-lock')) {
+        document.getElementById('vote-lock').classList.add('hidden');
+        document.getElementById('vote-content').classList.remove('hidden');
+    }
+}
+
+// --- 4. VOTING & REAL-TIME RANKING ---
+function castVote(id) {
+    const category = id.startsWith('b') ? 'boy' : 'girl';
+    
+    // Check if they already voted for this category (Boy/Girl)
+    if (localStorage.getItem('voted_' + category)) {
+        alert("You have already voted in this category!");
+        return;
+    }
+
+    // Update Firebase
+    db.ref('votes/' + id).transaction((currentVotes) => {
+        return (currentVotes || 0) + 1;
+    });
+
+    // Save to local memory
+    localStorage.setItem('voted_' + category, 'true');
+    alert("Vote cast successfully!");
+}
+
+// Listen for vote changes and Sort them live
+db.ref('votes').on('value', (snapshot) => {
+    const votesData = snapshot.val() || {};
+    
+    // Sort nominees based on vote counts
+    const sortedNominees = [...nominees].sort((a, b) => {
+        return (votesData[b.id] || 0) - (votesData[a.id] || 0);
+    });
+
+    // Clear current lists
+    const boysList = document.getElementById('boys-list');
+    const girlsList = document.getElementById('girls-list');
+    if(boysList) boysList.innerHTML = '';
+    if(girlsList) girlsList.innerHTML = '';
+
+    // Render sorted list
+    sortedNominees.forEach(n => {
+        const count = votesData[n.id] || 0;
+        const cardHtml = `
+            <div class="glass p-4 rounded-[25px] flex items-center gap-4 border border-white/5 transition-all duration-500">
+                <img src="${n.photo}" class="w-12 h-12 rounded-xl object-cover border border-white/10">
+                <div class="flex-1">
+                    <p class="text-white font-bold uppercase italic text-[11px]">${n.name}</p>
+                    <p class="text-[9px] text-white/40 font-black tracking-widest">${count} VOTES</p>
+                </div>
+                <button onclick="castVote('${n.id}')" class="px-4 py-2 bg-white/5 hover:bg-green-400 hover:text-black rounded-lg text-[8px] font-black uppercase transition-all">Vote</button>
+            </div>
+        `;
+        
+        if(n.gender === 'boy' && boysList) boysList.innerHTML += cardHtml;
+        if(n.gender === 'girl' && girlsList) girlsList.innerHTML += cardHtml;
+    });
+});
+		
         const BATCH_PASS = "BMT2026";
         let isAuth = false;
 
