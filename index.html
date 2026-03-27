@@ -43,6 +43,30 @@
         .shuffling-photo:nth-child(4) { animation: shuffle 20s infinite 15s; }
     </style>
 </head>
+
+<div id="site-pause" class="fixed inset-0 z-[1000] bg-black flex flex-col items-center justify-center text-center px-6">
+    <div class="h-20 w-20 bg-yellow-500/20 rounded-3xl flex items-center justify-center mb-8 border border-yellow-500/30 animate-pulse">
+        <span class="text-4xl">🚧</span>
+    </div>
+    <h1 class="text-3xl md:text-5xl font-black text-white uppercase italic mb-4 tracking-tighter">
+        Portal <span class="text-yellow-500">Paused</span>
+    </div>
+    <p class="text-white/40 text-[10px] md:text-xs uppercase tracking-[0.4em] font-bold max-w-md leading-relaxed">
+        The BioConnect portal is temporarily offline for maintenance or election processing. Please check back later.
+    </p>
+    <div class="mt-12 h-1 w-20 bg-white/10 rounded-full overflow-hidden">
+        <div class="h-full bg-yellow-500 w-1/2 animate-shimmer"></div>
+    </div>
+</div>
+
+<style>
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(200%); }
+    }
+    .animate-shimmer { animation: shimmer 2s infinite linear; }
+</style>	
+	
 <body>
 
     <div class="cinematic-bg-container">
